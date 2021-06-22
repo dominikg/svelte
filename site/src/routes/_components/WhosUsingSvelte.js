@@ -16,6 +16,11 @@ export const companies = [
 		alt: "Avast logo",
 	},
 	{
+		href: "https://brave.com",
+		filename: "brave.svg",
+		alt: "Brave logo",
+	},
+	{
 		href: "https://chess.com",
 		style: "background-color: #312e2b;",
 		filename: "chess.svg",
