@@ -2,10 +2,10 @@ name: Integration
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
 env:
   CI: true
   PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
