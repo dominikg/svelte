@@ -49,6 +49,7 @@ jobs:
         working-directory: ./kit
         run: |
           contents="$(jq '.pnpm.overrides.svelte = "${{github.workspace}}"' package.json)" && echo "${contents}" > package.json
+          pnpm i --lockfile-only
           pnpm i --prefer-offline
           pnpm build --filter ./packages --filter !./packages/create-svelte/templates
           pnpm test
@@ -56,6 +57,7 @@ jobs:
         working-directory: ./vite-plugin-svelte
         run: |
           contents="$(jq '.pnpm.overrides.svelte = "${{github.workspace}}"' package.json)" && echo "${contents}" > package.json
+          pnpm i --lockfile-only
           pnpm i --prefer-offline
           pnpm build:ci
           pnpm test:ci
