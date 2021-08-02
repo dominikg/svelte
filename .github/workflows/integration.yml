@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@main
         with:
           path: '~/.cache/ms-playwright'
-          key: chromium-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: chromium-${{ hashFiles('**/pnpm-lock.yaml') }}
       - run: npm install -g pnpm
       - run: |
           npm ci
