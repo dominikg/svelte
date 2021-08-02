@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - ci/integration-testing
   pull_request:
     branches:
       - master
