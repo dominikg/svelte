@@ -1,0 +1,60 @@
+name: Integration
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+env:
+  CI: true
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+jobs:
+  Integration:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          repository: sveltejs/kit
+          path: kit
+      - uses: actions/checkout@v2
+        with:
+          repository: sveltejs/vite-plugin-svelte
+          path: vite-plugin-svelte
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: npm
+      - name: Cache ~/.pnpm-store
+        id: cache
+        uses: actions/cache@main
+        with:
+          path: '~/.pnpm-store/v3'
+          key: pnpm-cache-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: pnpm-cache-
+      - name: Cache browsers
+        id: browser_cache
+        uses: actions/cache@main
+        with:
+          path: '~/.cache/ms-playwright'
+          key: chromium-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+      - run: npm install -g pnpm
+      - run: |
+          npm ci
+          npm run build
+      - name: test kit
+        working-directory: ./kit
+        run: |
+          contents="$(jq '.pnpm.overrides.svelte = "${{github.workspace}}"' package.json)" && echo "${contents}" > package.json
+          pnpm i --frozen-lockfile --prefer-offline
+          pnpm build --filter ./packages --filter !./packages/create-svelte/templates
+          pnpm test
+      - name: test vite-plugin-svelte
+        working-directory: ./vite-plugin-svelte
+        run: |
+          contents="$(jq '.pnpm.overrides.svelte = "${{github.workspace}}"' package.json)" && echo "${contents}" > package.json
+          pnpm i --frozen-lockfile --prefer-offline
+          pnpm build:ci
+          pnpm test:ci
